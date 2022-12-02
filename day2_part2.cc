@@ -28,14 +28,14 @@ struct NewRulesRound {
 
 auto ToAction [[nodiscard]] (char character) {
   switch (character) {
-  case 'X':
-    return Action::Lose;
-  case 'Y':
-    return Action::Draw;
-  case 'Z':
-    return Action::Win;
-  default:
-    assert(false);
+    case 'X':
+      return Action::Lose;
+    case 'Y':
+      return Action::Draw;
+    case 'Z':
+      return Action::Win;
+    default:
+      assert(false);
   }
 }
 
@@ -50,12 +50,12 @@ auto ShapeWhichWinsAgainst [[nodiscard]] (Shape loser_shape) {
 auto ToOldRulesRound [[nodiscard]] (const NewRulesRound &new_rules_round) {
   const auto my_shape = [&new_rules_round]() {
     switch (new_rules_round.my_action) {
-    case Action::Lose:
-      return ShapeWhichLosesTo(new_rules_round.opponent_shape);
-    case Action::Draw:
-      return new_rules_round.opponent_shape;
-    case Action::Win:
-      return ShapeWhichWinsAgainst(new_rules_round.opponent_shape);
+      case Action::Lose:
+        return ShapeWhichLosesTo(new_rules_round.opponent_shape);
+      case Action::Draw:
+        return new_rules_round.opponent_shape;
+      case Action::Win:
+        return ShapeWhichWinsAgainst(new_rules_round.opponent_shape);
     }
   }();
 
@@ -63,7 +63,7 @@ auto ToOldRulesRound [[nodiscard]] (const NewRulesRound &new_rules_round) {
                    .my_shape = my_shape};
 }
 
-auto main(int, const char *const *args) -> int {
+auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
 
   const auto chars = subrange{std::istream_iterator<char>{file_stream},

@@ -18,7 +18,7 @@ using ranges::subrange;
 using ranges::views::chunk;
 using ranges::views::transform;
 
-auto main(int, const char *const *args) -> int {
+auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
 
   const auto chars = subrange{std::istream_iterator<char>{file_stream},

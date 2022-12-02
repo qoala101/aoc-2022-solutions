@@ -23,7 +23,7 @@ using ranges::subrange;
 using ranges::views::split;
 using ranges::views::transform;
 
-auto main(int, const char *const *args) -> int {
+auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
 
   const auto lines = subrange{std::istream_iterator<Line>{file_stream},
