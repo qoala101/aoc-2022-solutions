@@ -52,16 +52,18 @@ auto CalculateGameScore [[nodiscard]] (Shape opponent_shape, Shape my_shape) {
       (ShapeScore(opponent_shape) - my_shape_score + 3) % 3;
 
   static const auto kDraw = 0;
-  static const auto kWon = 1;
-  static const auto kLost = 2;
+  static const auto kLost = 1;
+  static const auto kWon = 2;
 
   switch (shape_score_difference) {
   case kDraw:
     return my_shape_score + 3;
-  case kWon:
-    return my_shape_score + 6;
   case kLost:
     return my_shape_score;
+  case kWon:
+    return my_shape_score + 6;
+  default:
+    assert(false);
   }
 }
 
@@ -73,9 +75,10 @@ auto main(int, const char *const *args) -> int {
   auto shapes = chars | transform(ToShape);
   auto shape_pairs = shapes | chunk(2);
   auto scores = shape_pairs | transform([](const auto &shape_pair) {
-                  auto opponent_shape = shape_pair.begin();
-                  const auto my_shape = ++opponent_shape;
-                  return CalculateGameScore(*opponent_shape, *my_shape);
+                  auto shape = shape_pair.begin();
+                  const auto opponent_shape = *shape;
+                  const auto my_shape = *++shape;
+                  return CalculateGameScore(opponent_shape, my_shape);
                 });
 
   const auto total_score = accumulate(scores, 0);
