@@ -1,8 +1,10 @@
+#include <array>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <iterator>
-#include <range/v3/algorithm/max.hpp>
-#include <range/v3/functional/comparisons.hpp>
+#include <range/v3/algorithm/partial_sort_copy.hpp>
+#include <range/v3/functional/arithmetic.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/numeric/accumulate.hpp>
@@ -16,6 +18,7 @@
 #include "line.h"
 
 using ranges::accumulate;
+using ranges::partial_sort_copy;
 using ranges::views::split;
 using ranges::views::transform;
 
@@ -34,7 +37,12 @@ auto main(int, const char *const *args) -> int {
   auto calorie_sums = calorie_lists | transform([](const auto &calorie_list) {
                         return accumulate(calorie_list, 0);
                       });
-  const auto max_calories = ranges::max(calorie_sums);
 
-  std::cout << max_calories;
+  auto top_calories = std::array<int, 3>{};
+  partial_sort_copy(calorie_sums, top_calories, std::greater<>{});
+
+  const auto max_calories = top_calories[0];
+  const auto top_calories_sum = accumulate(top_calories, 0);
+
+  std::cout << max_calories << "\n" << top_calories_sum << "\n";
 }
