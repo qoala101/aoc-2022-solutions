@@ -39,3 +39,6 @@ find_package(range-v3)
 
 add_executable(day1 day1.cc)
 target_link_libraries(day1 PRIVATE range-v3::range-v3)
+
+add_executable(day2 day2.cc)
+target_link_libraries(day2 PRIVATE range-v3::range-v3)

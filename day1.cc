@@ -19,14 +19,15 @@
 
 using ranges::accumulate;
 using ranges::partial_sort_copy;
+using ranges::subrange;
 using ranges::views::split;
 using ranges::views::transform;
 
 auto main(int, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
 
-  const auto lines = ranges::subrange{std::istream_iterator<Line>{file_stream},
-                                      std::istream_iterator<Line>{}};
+  const auto lines = subrange{std::istream_iterator<Line>{file_stream},
+                              std::istream_iterator<Line>{}};
   const auto strings = lines | transform(Line::ToString);
   auto string_lists = strings | split(std::string{});
   auto calorie_lists = string_lists | transform([](const auto &string_list) {

@@ -5,7 +5,7 @@
 
 class Line {
 public:
-  static auto ToString(const Line &line) { return line.value_; }
+  static auto ToString [[nodiscard]] (const Line &line) { return line.value_; }
 
 private:
   friend auto operator>>(std::istream &stream, Line &line) -> auto & {
