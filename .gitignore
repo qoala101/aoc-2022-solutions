@@ -1,6 +1,6 @@
 bin
 build
+input
 lib
 .cache
-.inputs
 .vscode

@@ -46,5 +46,8 @@ target_link_libraries(day2_part1 PRIVATE range-v3::range-v3)
 add_executable(day2_part2 day2_part2.cc)
 target_link_libraries(day2_part2 PRIVATE range-v3::range-v3)
 
-add_executable(day3 day3.cc)
-target_link_libraries(day3 PRIVATE range-v3::range-v3)
+add_executable(day3_part1 day3_part1.cc)
+target_link_libraries(day3_part1 PRIVATE range-v3::range-v3)
+
+add_executable(day3_part2 day3_part2.cc)
+target_link_libraries(day3_part2 PRIVATE range-v3::range-v3)
