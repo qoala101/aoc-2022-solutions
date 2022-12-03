@@ -40,11 +40,11 @@ auto ToAction [[nodiscard]] (char character) {
 }
 
 auto ShapeWhichLosesTo [[nodiscard]] (Shape winner_shape) {
-  return static_cast<Shape>((static_cast<int>(winner_shape) - 1 + 3) % 3);
+  return Shape{(static_cast<int>(winner_shape) - 1 + 3) % 3};
 }
 
 auto ShapeWhichWinsAgainst [[nodiscard]] (Shape loser_shape) {
-  return static_cast<Shape>((static_cast<int>(loser_shape) + 1 + 3) % 3);
+  return Shape{(static_cast<int>(loser_shape) + 1 + 3) % 3};
 }
 
 auto ToOldRulesRound [[nodiscard]] (const NewRulesRound &new_rules_round) {

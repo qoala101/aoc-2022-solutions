@@ -1,13 +1,14 @@
 #ifndef LINE_H_
 #define LINE_H_
 
+#include <istream>
 #include <string>
 
 class Line {
-public:
+ public:
   static auto ToString [[nodiscard]] (const Line &line) { return line.value_; }
 
-private:
+ private:
   friend auto operator>>(std::istream &stream, Line &line) -> auto & {
     std::getline(stream, line.value_);
     return stream;
@@ -16,4 +17,4 @@ private:
   std::string value_{};
 };
 
-#endif // LINE_H_
+#endif  // LINE_H_
