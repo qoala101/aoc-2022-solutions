@@ -1,12 +1,15 @@
-#include <fstream>
+#include <fstream>  // IWYU pragma: keep
 #include <iostream>
 #include <iterator>
 #include <range/v3/algorithm/for_each.hpp>
 #include <range/v3/functional/arithmetic.hpp>
+#include <range/v3/functional/bind_back.hpp>
 #include <range/v3/functional/identity.hpp>
+#include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/range/conversion.hpp>
+#include <range/v3/range_fwd.hpp>
 #include <range/v3/utility/get.hpp>
 #include <range/v3/view/chunk.hpp>
 #include <range/v3/view/drop.hpp>
@@ -15,10 +18,10 @@
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 #include <set>
+#include <string>
 #include <utility>
 
 #include "day3.h"
-#include "line.h"
 
 using ranges::accumulate;
 using ranges::subrange;
@@ -31,9 +34,8 @@ using ranges::views::transform;
 auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
 
-  const auto lines = subrange{std::istream_iterator<Line>{file_stream},
-                              std::istream_iterator<Line>{}};
-  const auto strings = lines | transform(Line::ToString);
+  const auto strings = subrange{std::istream_iterator<std::string>{file_stream},
+                                std::istream_iterator<std::string>{}};
   auto string_lists = strings | chunk(3);
   auto char_set_lists =
       string_lists | transform([](const auto &string_list) {

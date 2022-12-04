@@ -1,13 +1,16 @@
 #include <array>
-#include <fstream>
+#include <fstream>  // IWYU pragma: keep
 #include <functional>
 #include <iostream>
 #include <iterator>
 #include <range/v3/algorithm/partial_sort_copy.hpp>
 #include <range/v3/functional/arithmetic.hpp>
+#include <range/v3/functional/bind_back.hpp>
 #include <range/v3/functional/identity.hpp>
+#include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/numeric/accumulate.hpp>
+#include <range/v3/range_fwd.hpp>
 #include <range/v3/view/split.hpp>
 #include <range/v3/view/subrange.hpp>
 #include <range/v3/view/transform.hpp>
@@ -15,13 +18,24 @@
 #include <string>
 #include <utility>
 
-#include "line.h"
-
 using ranges::accumulate;
 using ranges::partial_sort_copy;
 using ranges::subrange;
 using ranges::views::split;
 using ranges::views::transform;
+
+class Line {
+ public:
+  static auto ToString [[nodiscard]] (const Line &line) { return line.value_; }
+
+ private:
+  friend auto operator>>(std::istream &stream, Line &line) -> auto & {
+    std::getline(stream, line.value_);
+    return stream;
+  }
+
+  std::string value_{};
+};
 
 auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
