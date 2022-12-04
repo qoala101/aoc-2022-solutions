@@ -42,7 +42,7 @@ auto main(int /*unused*/, const char *const *args) -> int {
       char_sets | transform([](const auto &char_set) {
         return *set_intersection(char_set.first, char_set.second).begin();
       });
-  const auto priorities = shared_chars | transform(ToPriority);
+  const auto priorities = shared_chars | transform(aoc::ToPriority);
 
   const auto sum = accumulate(priorities, 0);
 

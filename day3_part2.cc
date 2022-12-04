@@ -54,7 +54,7 @@ auto main(int /*unused*/, const char *const *args) -> int {
 
         return *intersection.begin();
       });
-  auto priorities = shared_chars | transform(ToPriority);
+  auto priorities = shared_chars | transform(aoc::ToPriority);
 
   const auto sum = accumulate(priorities, 0);
 

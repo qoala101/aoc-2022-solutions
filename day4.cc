@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iterator>
 #include <range/v3/algorithm/copy.hpp>
-#include <range/v3/algorithm/count_if.hpp>
+#include <range/v3/algorithm/for_each.hpp>
 #include <range/v3/functional/bind_back.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/functional/invoke.hpp>
@@ -16,7 +16,7 @@
 #include <utility>
 
 using ranges::copy;
-using ranges::count_if;
+using ranges::for_each;
 using ranges::subrange;
 using ranges::views::transform;
 
@@ -36,6 +36,18 @@ auto IsRangeInRange [[nodiscard]] (std::pair<int, int> inner_range,
 auto HasFullOverlap [[nodiscard]] (const AssignmentPair &assignment_pair) {
   return IsRangeInRange(assignment_pair.first, assignment_pair.second) ||
          IsRangeInRange(assignment_pair.second, assignment_pair.first);
+}
+
+auto IsAnyRangeBorderInRange [[nodiscard]] (std::pair<int, int> inner_range,
+                                            std::pair<int, int> outer_range) {
+  return IsValueInRange(inner_range.first, outer_range) ||
+         IsValueInRange(inner_range.second, outer_range);
+}
+
+auto HasAnyOverlap [[nodiscard]] (const AssignmentPair &assignment_pair) {
+  return IsAnyRangeBorderInRange(assignment_pair.first,
+                                 assignment_pair.second) ||
+         IsAnyRangeBorderInRange(assignment_pair.second, assignment_pair.first);
 }
 }  // namespace aoc
 
@@ -70,8 +82,19 @@ auto main(int /*unused*/, const char *const *args) -> int {
                                    {section_arrays[2], section_arrays[3]}};
       });
 
-  const auto num_full_overlaps =
-      count_if(assignment_pair_lists, aoc::HasFullOverlap);
+  auto num_all_overlaps = 0;
+  auto num_full_overlaps = 0;
 
-  std::cout << num_full_overlaps << "\n";
+  for_each(assignment_pair_lists, [&num_all_overlaps, &num_full_overlaps](
+                                      const auto &assignment_pair) mutable {
+    if (aoc::HasAnyOverlap(assignment_pair)) {
+      ++num_all_overlaps;
+
+      if (aoc::HasFullOverlap(assignment_pair)) {
+        ++num_full_overlaps;
+      }
+    }
+  });
+
+  std::cout << num_full_overlaps << "\n" << num_all_overlaps << "\n";
 }
