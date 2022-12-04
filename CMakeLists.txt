@@ -20,7 +20,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-find_program(iwyu NAMES iwyu include-what-you-use REQUIRED)
+find_program(iwyu NAMES iwyu include-what-you-use)
 set(iwyu ${iwyu}
   -Xiwyu --no_comments
   -Xiwyu --no_fwd_decls
@@ -51,3 +51,6 @@ target_link_libraries(day3_part1 PRIVATE range-v3::range-v3)
 
 add_executable(day3_part2 day3_part2.cc)
 target_link_libraries(day3_part2 PRIVATE range-v3::range-v3)
+
+add_executable(day4 day4.cc)
+target_link_libraries(day4 PRIVATE range-v3::range-v3)

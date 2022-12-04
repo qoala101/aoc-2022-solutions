@@ -1,11 +1,14 @@
 #include <cassert>
-#include <fstream>
+#include <fstream>  // IWYU pragma: keep
 #include <iostream>
 #include <iterator>
 #include <range/v3/functional/arithmetic.hpp>
+#include <range/v3/functional/bind_back.hpp>
 #include <range/v3/functional/identity.hpp>
+#include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/numeric/accumulate.hpp>
+#include <range/v3/range_fwd.hpp>
 #include <range/v3/view/chunk.hpp>
 #include <range/v3/view/subrange.hpp>
 #include <range/v3/view/transform.hpp>
@@ -19,6 +22,7 @@ using ranges::subrange;
 using ranges::views::chunk;
 using ranges::views::transform;
 
+namespace aoc {
 enum class Action { Lose, Draw, Win };
 
 struct NewRulesRound {
@@ -62,6 +66,7 @@ auto ToOldRulesRound [[nodiscard]] (const NewRulesRound &new_rules_round) {
   return GameRound{.opponent_shape = new_rules_round.opponent_shape,
                    .my_shape = my_shape};
 }
+}  // namespace aoc
 
 auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
@@ -72,11 +77,11 @@ auto main(int /*unused*/, const char *const *args) -> int {
   auto new_rules_rounds =
       char_pairs | transform([](const auto &char_pair) {
         auto character = char_pair.begin();
-        return NewRulesRound{.opponent_shape = ToShape(*character),
-                             .my_action = ToAction(*++character)};
+        return aoc::NewRulesRound{.opponent_shape = aoc::ToShape(*character),
+                                  .my_action = aoc::ToAction(*++character)};
       });
-  auto old_rules_rounds = new_rules_rounds | transform(ToOldRulesRound);
-  auto scores = old_rules_rounds | transform(CalculateGameScore);
+  auto old_rules_rounds = new_rules_rounds | transform(aoc::ToOldRulesRound);
+  auto scores = old_rules_rounds | transform(aoc::CalculateGameScore);
 
   const auto total_score = accumulate(scores, 0);
 

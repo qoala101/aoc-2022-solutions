@@ -4,21 +4,20 @@
 #include <cassert>
 #include <utility>
 
-inline auto InRange
-    [[nodiscard]] (char character, std::pair<char, char> range) {
-  return (character >= range.first) && (character <= range.second);
-}
+#include "common.h"
 
+namespace aoc {
 inline auto ToPriority [[nodiscard]] (char character) {
-  if (InRange(character, {'a', 'z'})) {
+  if (IsInRange(character, {'a', 'z'})) {
     return int{character - 'a' + 1};
   }
 
-  if (InRange(character, {'A', 'Z'})) {
+  if (IsInRange(character, {'A', 'Z'})) {
     return int{character - 'A' + 'z' - 'a' + 2};
   }
 
   assert(false);
 }
+}  // namespace aoc
 
 #endif  // DAY3_H_

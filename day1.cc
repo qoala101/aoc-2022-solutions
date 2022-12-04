@@ -24,6 +24,7 @@ using ranges::subrange;
 using ranges::views::split;
 using ranges::views::transform;
 
+namespace aoc {
 class Line {
  public:
   static auto ToString [[nodiscard]] (const Line &line) { return line.value_; }
@@ -36,13 +37,14 @@ class Line {
 
   std::string value_{};
 };
+}  // namespace aoc
 
 auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};
 
-  const auto lines = subrange{std::istream_iterator<Line>{file_stream},
-                              std::istream_iterator<Line>{}};
-  const auto strings = lines | transform(Line::ToString);
+  const auto lines = subrange{std::istream_iterator<aoc::Line>{file_stream},
+                              std::istream_iterator<aoc::Line>{}};
+  const auto strings = lines | transform(aoc::Line::ToString);
   auto string_lists = strings | split(std::string{});
   auto calorie_lists = string_lists | transform([](const auto &string_list) {
                          return string_list | transform([](const auto &string) {

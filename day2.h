@@ -3,6 +3,7 @@
 
 #include <cassert>
 
+namespace aoc {
 enum class Shape { Rock, Paper, Scissors };
 
 struct GameRound {
@@ -42,20 +43,24 @@ inline auto CalculateGameScore [[nodiscard]] (const GameRound &game_round) {
   const auto shape_score_difference =
       (ShapeScore(game_round.opponent_shape) - my_shape_score + 3) % 3;
 
-  static const auto kDraw = 0;
-  static const auto kLost = 1;
-  static const auto kWon = 2;
+  static constexpr auto kDrawDifference = 0;
+  static constexpr auto kLostDifference = 1;
+  static constexpr auto kWonDifference = 2;
+
+  static constexpr auto kLostPoints = 3;
+  static constexpr auto kWonPoints = 6;
 
   switch (shape_score_difference) {
-    case kDraw:
-      return my_shape_score + 3;
-    case kLost:
+    case kDrawDifference:
+      return my_shape_score + kLostPoints;
+    case kLostDifference:
       return my_shape_score;
-    case kWon:
-      return my_shape_score + 6;
+    case kWonDifference:
+      return my_shape_score + kWonPoints;
     default:
       assert(false);
   }
 }
+}  // namespace aoc
 
 #endif  // DAY2_H_
