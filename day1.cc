@@ -18,26 +18,13 @@
 #include <string>
 #include <utility>
 
+#include "line.h"
+
 using ranges::accumulate;
 using ranges::partial_sort_copy;
 using ranges::subrange;
 using ranges::views::split;
 using ranges::views::transform;
-
-namespace aoc {
-class Line {
- public:
-  static auto ToString [[nodiscard]] (const Line &line) { return line.value_; }
-
- private:
-  friend auto operator>>(std::istream &stream, Line &line) -> auto & {
-    std::getline(stream, line.value_);
-    return stream;
-  }
-
-  std::string value_{};
-};
-}  // namespace aoc
 
 auto main(int /*unused*/, const char *const *args) -> int {
   auto file_stream = std::ifstream{args[1]};

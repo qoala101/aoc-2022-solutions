@@ -5,6 +5,7 @@ diff <(
   ./bin/day3_part1 ./input/day3
   ./bin/day3_part2 ./input/day3
   ./bin/day4 ./input/day4
+  ./bin/day5 ./input/day5
 ) <(
   echo 72070
   echo 211805
@@ -14,4 +15,5 @@ diff <(
   echo 2510
   echo 571
   echo 917
+  echo TBVFVDZPN
 )
