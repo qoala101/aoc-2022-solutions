@@ -16,4 +16,5 @@ diff <(
   echo 571
   echo 917
   echo TBVFVDZPN
+  echo VLCWHTDSZ
 )
