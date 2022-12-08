@@ -2,6 +2,7 @@
 #include <fstream>  // IWYU pragma: keep
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/algorithm/for_each.hpp>
 #include <range/v3/functional/arithmetic.hpp>
@@ -83,9 +84,9 @@ struct Dir {
   }
 
   std::string name{};
-  std::vector<std::variant<Dir, File>> children{};
 
   Dir *parent{};
+  std::vector<std::variant<Dir, File>> children{};
 };
 
 enum class ParserState {
@@ -179,24 +180,41 @@ struct Parser {
   int current_file_size = 0;
 };
 
-struct DirSizesSumVisitor {
-  void operator()(const File & /*unused*/) {}
+struct SmallDirSizesSumVisitor {
+  void operator()(const File & /*unused*/) const {}
 
   void operator()(const Dir &dir) {
     const auto dir_size = dir.GetSize();
 
-    // NOLINTNEXTLINE(*-magic-numbers)
-    if (dir_size <= 100000) {
+    if (dir_size <= max_dir_size) {
       dir_sizes_sum += dir_size;
     }
   }
 
+  int max_dir_size{};
+
   int dir_sizes_sum{};
+};
+
+struct ClosestSizeDirVisitor {
+  void operator()(const File & /*unused*/) const {}
+
+  void operator()(const Dir &dir) {
+    const auto dir_size = dir.GetSize();
+
+    if ((dir_size >= required_size) && (dir_size <= closest_size)) {
+      closest_size = dir_size;
+    }
+  }
+
+  int required_size{};
+
+  int closest_size{std::numeric_limits<int>::max()};
 };
 }  // namespace aoc
 
 auto main(int /*unused*/, const char *const *args) -> int {
-  auto file_stream = std::ifstream{args[1]};
+  auto file_stream = std::ifstream{"../input/day7"};
 
   const auto strings = subrange{std::istream_iterator<std::string>{file_stream},
                                 std::istream_iterator<std::string>{}};
@@ -206,8 +224,17 @@ auto main(int /*unused*/, const char *const *args) -> int {
   for_each(strings,
            [&parser](const auto &string) { parser.ParseNextWord(string); });
 
-  auto visitor = aoc::DirSizesSumVisitor{};
-  parser.root.Accept(visitor);
+  auto small_dirs_visitor =
+      // NOLINTNEXTLINE(*-magic-numbers)
+      aoc::SmallDirSizesSumVisitor{.max_dir_size = 100000};
+  parser.root.Accept(small_dirs_visitor);
 
-  std::cout << visitor.dir_sizes_sum << "\n";
+  std::cout << small_dirs_visitor.dir_sizes_sum << "\n";
+
+  const auto space_required = parser.root.GetSize() + 30000000 - 70000000;
+  auto closest_size_dir_visitor =
+      aoc::ClosestSizeDirVisitor{.required_size = space_required};
+  parser.root.Accept(closest_size_dir_visitor);
+
+  std::cout << closest_size_dir_visitor.closest_size << "\n";
 }
