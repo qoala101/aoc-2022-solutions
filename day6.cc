@@ -36,11 +36,10 @@ auto FindMessageStartPos(const std::vector<char> &chars, int marker_length) {
 
   return distance(not_unique_char_sets) + marker_length;
 }
-
 }  // namespace aoc
 
 auto main(int /*unused*/, const char *const *args) -> int {
-  auto file_stream = std::ifstream{"../input/day6"};
+  auto file_stream = std::ifstream{args[1]};
 
   const auto chars = subrange{std::istream_iterator<char>{file_stream},
                               std::istream_iterator<char>{}} |
