@@ -214,7 +214,7 @@ struct ClosestSizeDirVisitor {
 }  // namespace aoc
 
 auto main(int /*unused*/, const char *const *args) -> int {
-  auto file_stream = std::ifstream{"../input/day7"};
+  auto file_stream = std::ifstream{args[1]};
 
   const auto strings = subrange{std::istream_iterator<std::string>{file_stream},
                                 std::istream_iterator<std::string>{}};

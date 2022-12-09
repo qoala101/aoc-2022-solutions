@@ -63,3 +63,6 @@ target_link_libraries(day6 PRIVATE range-v3::range-v3)
 
 add_executable(day7 day7.cc)
 target_link_libraries(day7 PRIVATE range-v3::range-v3)
+
+add_executable(day8 day8.cc)
+target_link_libraries(day8 PRIVATE range-v3::range-v3)

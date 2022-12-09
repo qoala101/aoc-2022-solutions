@@ -104,18 +104,18 @@ auto main(int /*unused*/, const char *const *args) -> int {
           }));
   auto containers = std::vector<std::list<char>>(num_containers);
 
-  for_each(horizontal_char_lists, [&containers](
-                                      const auto &horizontal_chars) mutable {
-    auto container = containers.begin();
+  for_each(horizontal_char_lists,
+           [&containers](const auto &horizontal_chars) mutable {
+             auto container = containers.begin();
 
-    for_each(horizontal_chars, [&container](const auto &character) mutable {
-      if (aoc::IsInRange(character, {'A', 'Z'})) {
-        container->push_back(character);
-      }
+             for_each(horizontal_chars, [&container](auto character) mutable {
+               if (aoc::IsInRange(character, {'A', 'Z'})) {
+                 container->push_back(character);
+               }
 
-      ++container;
-    });
-  });
+               ++container;
+             });
+           });
 
   auto move_strings = strings | drop(1);
   const auto moves = move_strings | transform([](const auto &move_string) {
