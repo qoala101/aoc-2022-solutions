@@ -1,7 +1,6 @@
 #include <bits/std_abs.h>
 
 #include <cassert>
-#include <concepts>
 #include <cstdlib>
 #include <fstream>  // IWYU pragma: keep
 #include <iostream>
@@ -18,43 +17,30 @@
 #include <string>
 #include <vector>
 
+#include "day8.h"
+
 using ranges::subrange;
 using ranges::to_vector;
 using ranges::views::transform;
 
 namespace aoc {
-using Tree = int;
-using TreeMatrix = std::vector<std::vector<Tree>>;
+using TreeHeight = int;
+using TreeHeightsMatrix = std::vector<std::vector<TreeHeight>>;
 
-auto GetTreeHeight [[nodiscard]] (Tree tree) { return std::abs(tree); }
+auto GetTreeHeight [[nodiscard]] (TreeHeight tree) { return std::abs(tree); }
 
-void MarkTreeAsVisible(Tree &tree) { tree = -GetTreeHeight(tree); }
+void MarkTreeAsVisible(TreeHeight &tree) { tree = -GetTreeHeight(tree); }
 
-auto IsTreeVisible [[nodiscard]] (Tree tree) { return tree < 0; }
+auto IsTreeVisible [[nodiscard]] (TreeHeight tree) { return tree < 0; }
 
-auto IsTreeHigher [[nodiscard]] (Tree left, Tree right) {
+auto IsTreeHigher [[nodiscard]] (TreeHeight left, TreeHeight right) {
   return GetTreeHeight(left) > GetTreeHeight(right);
 }
 
-template <typename T>
-concept TreeMatrixTraits = requires(const TreeMatrix const_tree_matrix,
-                                    TreeMatrix tree_matrix, int row, int col) {
-                             {
-                               T::GetNumRows(const_tree_matrix)
-                               } -> std::same_as<int>;
-                             {
-                               T::GetNumCols(const_tree_matrix)
-                               } -> std::same_as<int>;
-                             {
-                               T::GetTreeInCell(tree_matrix, row, col)
-                               } -> std::same_as<Tree &>;
-                             true;
-                           };
-
-template <TreeMatrixTraits Traits>
+template <MatrixTraits Traits>
 class MarkTreesVisibleFromSides {
  public:
-  auto operator() [[nodiscard]] (TreeMatrix &tree_matrix) {
+  auto operator() [[nodiscard]] (TreeHeightsMatrix &tree_matrix) {
     tree_matrix_ = &tree_matrix;
 
     const auto num_rows = Traits::GetNumRows(*tree_matrix_);
@@ -77,7 +63,7 @@ class MarkTreesVisibleFromSides {
     return num_visible_trees_;
   }
 
-  void MarkTreeAsVisibleIfNotAlready(Tree &tree) {
+  void MarkTreeAsVisibleIfNotAlready(TreeHeight &tree) {
     if (!IsTreeVisible(tree)) {
       MarkTreeAsVisible(tree);
       ++num_visible_trees_;
@@ -87,11 +73,11 @@ class MarkTreesVisibleFromSides {
   void MarkFromBeginTillMax() {
     assert(tree_matrix_ != nullptr);
 
-    max_tree_ = Tree{};
+    max_tree_ = TreeHeight{};
     max_tree_col_ = -1;
 
     for (auto col = 0; col < num_cols_; ++col) {
-      auto &tree = Traits::GetTreeInCell(*tree_matrix_, row_, col);
+      auto &tree = Traits::GetCell(*tree_matrix_, row_, col);
 
       if (first_or_last_row_) {
         MarkTreeAsVisibleIfNotAlready(tree);
@@ -110,11 +96,11 @@ class MarkTreesVisibleFromSides {
   void MarkFromEndTillMax() {
     assert(tree_matrix_ != nullptr);
 
-    max_tree_ = Tree{};
+    max_tree_ = TreeHeight{};
     const auto forward_max_tree_col = max_tree_col_;
 
     for (auto col = num_cols_ - 1; col > forward_max_tree_col; --col) {
-      auto &tree = Traits::GetTreeInCell(*tree_matrix_, row_, col);
+      auto &tree = Traits::GetCell(*tree_matrix_, row_, col);
 
       if (IsTreeHigher(tree, max_tree_)) {
         MarkTreeAsVisibleIfNotAlready(tree);
@@ -126,49 +112,13 @@ class MarkTreesVisibleFromSides {
   }
 
  private:
-  TreeMatrix *tree_matrix_{};
+  TreeHeightsMatrix *tree_matrix_{};
   int num_cols_{};
   int row_{};
   bool first_or_last_row_{};
-  Tree max_tree_{};
+  TreeHeight max_tree_{};
   int max_tree_col_{};
   int num_visible_trees_{};
-};
-
-struct RowFirstTraversal {
-  static auto GetNumRows [[nodiscard]] (const TreeMatrix &tree_matrix) {
-    return static_cast<int>(tree_matrix.size());
-  }
-
-  static auto GetNumCols [[nodiscard]] (const TreeMatrix &tree_matrix) {
-    assert(!tree_matrix.empty());
-    return static_cast<int>(tree_matrix[0].size());
-  }
-
-  static auto GetTreeInCell
-      [[nodiscard]] (TreeMatrix &tree_matrix, int row, int col) -> auto & {
-    assert((row >= 0) && (row < GetNumRows(tree_matrix)));
-    assert((col >= 0) && (col < GetNumRows(tree_matrix)));
-    return tree_matrix[row][col];
-  }
-};
-
-struct ColumnFirstTraversal {
-  static auto GetNumRows [[nodiscard]] (const TreeMatrix &tree_matrix) {
-    assert(!tree_matrix.empty());
-    return static_cast<int>(tree_matrix[0].size());
-  }
-
-  static auto GetNumCols [[nodiscard]] (const TreeMatrix &tree_matrix) {
-    return static_cast<int>(tree_matrix.size());
-  }
-
-  static auto GetTreeInCell
-      [[nodiscard]] (TreeMatrix &tree_matrix, int row, int col) -> auto & {
-    assert((row >= 0) && (row < GetNumRows(tree_matrix)));
-    assert((col >= 0) && (col < GetNumRows(tree_matrix)));
-    return tree_matrix[col][row];
-  }
 };
 }  // namespace aoc
 
